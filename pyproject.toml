@@ -1,0 +1,47 @@
+
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "closeable"
+version = "1.0.0"
+dependencies = []
+requires-python = ">=3.12"
+authors = [
+  {name = "tikubonn"}
+]
+maintainers = [
+  {name = "tikubonn"}
+]
+description = "Provide some classes to define any closable class."
+readme = "README.md"
+license = "AGPL-3.0"
+license-files = ["LICEN[CS]E"]
+keywords = []
+classifiers = [
+  "Programming Language :: Python"
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8.4.2"
+]
+
+[project.urls]
+Homepage = "https://github.com/tikubonn/closeable"
+Documentation = "https://github.com/tikubonn/closeable/README.md"
+Repository = "https://github.com/tikubonn/closeable.git"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = [
+  "closeable"
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-v"
+testpaths = [
+  "test"
+]

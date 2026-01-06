@@ -33,7 +33,7 @@ class Sample (ICloseable):
     return self.closeable.closed
 
   def put (self, data:str):
-    self.closeable.raise_if_closed()
+    self.closeable.must_be_open()
     print("put: {:s}".format(data))
 
 sample = Sample()

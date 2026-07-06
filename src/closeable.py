@@ -1,6 +1,5 @@
 
 from abc import ABC, abstractmethod
-from typing import Callable
 
 """閉じる機能をもつオブジェクトを定義するためのインタフェイス・クラスを提供します。
 
@@ -13,7 +12,7 @@ Examples
 >>>     self.closeable = Closeable(self._on_close)
 >>> 
 >>>   def _on_close (self):
->>>     print("closed!")
+>>>     print("Close")
 >>> 
 >>>   def close (self):
 >>>     self.closeable.close()
@@ -22,22 +21,22 @@ Examples
 >>>   def closed (self) -> bool:
 >>>     return self.closeable.closed
 >>> 
->>>   def put (self, data:str):
->>>     self.closeable.raise_if_closed()
->>>     print("put: {:s}".format(data))
+>>>   def say (self):
+>>>     self.closeable.must_be_open()
+>>>     print("Hello")
 >>> 
 >>> sample = Sample()
 >>> sample.closed
 False
->>> sample.put("hello!")
-put: hello!
+>>> sample.say()
+Hello
 >>> sample.close()
-closed!
+Close
 >>> sample.close()
 >>> sample.closed
 True
->>> sample.put("hello!")
-CloseableStateError: Object has already closed: <...>
+>>> sample.say()
+StateError: Object has already closed: ...
 """
 
 class ICloseable (ABC):
@@ -66,7 +65,7 @@ class ICloseable (ABC):
 
     pass
 
-class CloseableStateError (Exception):
+class StateError (Exception):
 
   """オブジェクトの状態が許容しない操作が行われた際に送出される例外です。"""
 
@@ -82,32 +81,41 @@ class Closeable (ICloseable):
   Examples
   --------
   >>> class Sample (ICloseable):
+  >>> 
   >>>   def __init__ (self):
   >>>     self._closeable = Closeable(self._on_close)
+  >>> 
   >>>   def _on_close (self):
   >>>     print("closed!")
+  >>> 
   >>>   @property
   >>>   def closed (self) -> bool:
   >>>     return self._closeable.closed
+  >>> 
   >>>   def close (self):
   >>>     self._closeable.close()
+  >>> 
   >>> sample = Sample()
   >>> sample.closed
   False
+  >>> sample.say()
+  Hello
   >>> sample.close()
-  closed!
+  Close
   >>> sample.close()
   >>> sample.closed
   True
+  >>> sample.say()
+  StateError: Object has already closed: ...
   """
 
-  def __init__ (self, close_func:Callable=None):
+  def __init__ (self, close_func:"typing.Callable[..., None]|None"=None):
 
     """インスタンスの初期化を行います。
 
     Parameters
     ----------
-    close_func : Callable
+    close_func : typing.Callable[..., None]|None
       オブジェクトが閉じられる時に一度だけ実行される関数です。
       未指定ならば `None` が設定され、何も実行されません。
     """
@@ -147,12 +155,12 @@ class Closeable (ICloseable):
 
     Raises
     ------
-    CloseableStateError
+    StateError
       オブジェクトが既に閉じられた状態で本メソッドが呼ばれた場合に送出されます。
     """
 
     if self._closed:
-      raise CloseableStateError("Object has already closed: {:s}".format(repr(self)))
+      raise StateError("Object has already closed: {!r}".format(self))
 
   def must_be_close (self):
 
@@ -160,9 +168,9 @@ class Closeable (ICloseable):
 
     Raises
     ------
-    CloseableStateError
+    StateError
       オブジェクトが開かれた状態で本メソッドが呼ばれた場合に送出されます。
     """
 
     if not self._closed:
-      raise CloseableStateError("Object has never closed yet: {:s}".format(repr(self)))
+      raise StateError("Object has never closed yet: {!r}".format(self))

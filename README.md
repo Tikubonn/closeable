@@ -23,7 +23,7 @@ class Sample (ICloseable):
     self.closeable = Closeable(self._on_close)
 
   def _on_close (self):
-    print("closed!")
+    print("Close")
 
   def close (self):
     self.closeable.close()
@@ -32,17 +32,17 @@ class Sample (ICloseable):
   def closed (self) -> bool:
     return self.closeable.closed
 
-  def put (self, data:str):
+  def say (self):
     self.closeable.must_be_open()
-    print("put: {:s}".format(data))
+    print("Hello")
 
 sample = Sample()
 sample.closed #False
-sample.put("hello!") #put: hello!
-sample.close() #closed!
+sample.say() #Hello
+sample.close() #Close
 sample.close()
 sample.closed #True
-sample.put("hello!") #raise CloseableStateError!
+sample.say() #StateError: Object has already closed: ...
 ```
 
 ## Install

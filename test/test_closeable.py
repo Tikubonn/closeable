@@ -1,6 +1,6 @@
 
 import pytest
-from closeable import Closeable, CloseableStateError
+from closeable import Closeable, StateError
 
 def test_closeable ():
 
@@ -36,7 +36,7 @@ def test_closeable_must_be_open ():
   closeable = Closeable()
   closeable.must_be_open()
   closeable.close()
-  with pytest.raises(CloseableStateError):
+  with pytest.raises(StateError):
     closeable.must_be_open()
 
 def test_closeable_must_be_close ():
@@ -44,7 +44,7 @@ def test_closeable_must_be_close ():
   #Closeable.must_be_close() の動作確認です
 
   closeable = Closeable()
-  with pytest.raises(CloseableStateError):
+  with pytest.raises(StateError):
     closeable.must_be_close()
   closeable.close()
   closeable.must_be_close()
